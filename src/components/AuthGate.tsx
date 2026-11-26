@@ -141,11 +141,15 @@ function LockScreen() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-4 py-10">
       <div key={shakeKey} className={`glass w-full max-w-[400px] p-7 ${shakeKey ? "shake" : "modal-in"}`}>
-        <div
-          className="mx-auto mb-5 grid size-14 place-items-center rounded-[20px]"
-          style={{ background: "linear-gradient(140deg, var(--accent), var(--accent-2))", color: "var(--on-accent)", boxShadow: "inset 0 1px 0 rgb(255 255 255 / 0.4), 0 12px 30px -10px var(--accent)" }}
-        >
-          {isSetup ? <ShieldCheck size={26} /> : <Lock size={24} />}
+        <div className="relative mx-auto mb-5 size-[72px]">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static brand mark */}
+          <img src="/logo.svg" alt="Mijoz topish" width={72} height={72} className="size-[72px] drop-shadow-[0_14px_28px_rgb(150_75_15_/_0.45)]" />
+          <span
+            className="absolute -right-1.5 -bottom-1.5 grid size-7 place-items-center rounded-full"
+            style={{ background: "var(--tab-active-bg)", color: "var(--tab-active-text)", boxShadow: "0 0 0 3px var(--glass-bg-strong)" }}
+          >
+            {isSetup ? <ShieldCheck size={14} /> : <Lock size={13} />}
+          </span>
         </div>
         <h1 className="text-center text-[22px] font-semibold tracking-[-0.02em]">{isSetup ? t("Parol o'rnating") : t("Xush kelibsiz")}</h1>
         <p className="text-2 mt-1.5 mb-6 text-center text-[13.5px]">

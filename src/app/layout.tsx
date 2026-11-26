@@ -3,7 +3,9 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Mijoz topish — CRM",
-  description: "Haftalik plan, kun tartibi va kunlik hisobot — Notion bilan.",
+  description: "Mijoz topish, qo'ng'iroqlar, sotuvlar va qarzlar — bir joyda.",
+  applicationName: "Mijoz topish",
+  appleWebApp: { capable: true, title: "Mijoz topish", statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = {

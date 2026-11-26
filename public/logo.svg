@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Mijoz topish</title>
+  <defs>
+    <!-- Warm amber tile, same family as the app's accent colours -->
+    <linearGradient id="bg" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#F2B05C"/>
+      <stop offset="0.5" stop-color="#DC8429"/>
+      <stop offset="1" stop-color="#A9520E"/>
+    </linearGradient>
+    <!-- Liquid-glass sheen in the top-left -->
+    <radialGradient id="sheen" cx="0.28" cy="0.12" r="0.75">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.32"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glyph" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFBF4"/>
+      <stop offset="1" stop-color="#FCE9D2"/>
+    </linearGradient>
+    <clipPath id="lens">
+      <circle cx="226" cy="226" r="98"/>
+    </clipPath>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#5A2A05" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="116" fill="url(#sheen)"/>
+  <rect x="3" y="3" width="506" height="506" rx="113" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="6"/>
+
+  <g filter="url(#shadow)">
+    <!-- Magnifier: "finding" -->
+    <circle cx="226" cy="226" r="118" fill="none" stroke="url(#glyph)" stroke-width="40"/>
+    <line x1="314" y1="314" x2="394" y2="394" stroke="url(#glyph)" stroke-width="50" stroke-linecap="round"/>
+    <!-- The client inside the lens -->
+    <g clip-path="url(#lens)" fill="url(#glyph)">
+      <circle cx="226" cy="198" r="36"/>
+      <path d="M150 334 C150 278 186 250 226 250 C266 250 302 278 302 334 Z"/>
+    </g>
+    <!-- Spark: a new client found -->
+    <path d="M398 92 C402 120 410 128 438 132 C410 136 402 144 398 172 C394 144 386 136 358 132 C386 128 394 120 398 92 Z" fill="url(#glyph)"/>
+  </g>
+</svg>
