@@ -2,8 +2,10 @@
 
 import { Eye, EyeOff, KeyRound, Lock, ShieldCheck } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { PASSWORD_MIN } from "@/lib/vault";
-import { LANGS, useLang, useT } from "@/locales";
+import * as vault from "@/lib/vault";
+import { PASSWORD_MIN, VaultError } from "@/lib/vault";
+import { LANGS, getT, useLang, useT } from "@/locales";
+import { toast } from "./ui";
 import { useAuth } from "@/store/useAuth";
 import { useDashboard } from "@/store/useDashboard";
 
@@ -57,6 +59,7 @@ function LockScreen() {
   const setup = useAuth((s) => s.setup);
   const unlock = useAuth((s) => s.unlock);
   const wipe = useAuth((s) => s.wipe);
+  const cloud = useAuth((s) => s.mode) === "cloud";
   const isSetup = status === "setup";
   const t = useT();
   const lang = useLang((s) => s.lang);
@@ -71,6 +74,20 @@ function LockScreen() {
   const [forgot, setForgot] = useState(false);
   const [shakeKey, setShakeKey] = useState(0);
   const [wipeText, setWipeText] = useState("");
+  const [setupCode, setSetupCode] = useState("");
+
+  function vaultError(e: unknown): string {
+    if (e instanceof VaultError) {
+      if (e.code === "rate_limited") {
+        setCooldown(e.retryAfter);
+        return t("Juda ko'p urinish. {s} soniyadan keyin qayta urining.", { s: e.retryAfter });
+      }
+      if (e.code === "network") return t("Internetga ulanib bo'lmadi. Aloqani tekshiring.");
+      if (e.code === "bad_setup_code") return t("Sozlash kodi noto'g'ri");
+      if (e.code === "exists") return t("Bu sayt uchun parol allaqachon o'rnatilgan. Sahifani yangilang.");
+    }
+    return t("Serverda xatolik. Birozdan keyin qayta urining.");
+  }
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -84,14 +101,26 @@ function LockScreen() {
     if (isSetup) {
       if (pw.length < PASSWORD_MIN) return setError(t("Parol kamida {n} ta belgidan iborat bo'lsin", { n: PASSWORD_MIN }));
       if (pw !== pw2) return setError(t("Parollar bir xil emas"));
+      if (cloud && !setupCode.trim()) return setError(t("Sozlash kodini kiriting"));
       setBusy(true);
-      await setup(pw);
+      try {
+        await setup(pw, setupCode.trim());
+      } catch (err) {
+        setError(vaultError(err));
+      }
       setBusy(false);
       return;
     }
     if (cooldown > 0) return;
     setBusy(true);
-    const ok = await unlock(pw);
+    let ok = false;
+    try {
+      ok = await unlock(pw);
+    } catch (err) {
+      setBusy(false);
+      setShakeKey((k) => k + 1);
+      return setError(vaultError(err));
+    }
     setBusy(false);
     if (!ok) {
       const n = fails + 1;
@@ -127,6 +156,20 @@ function LockScreen() {
           <form className="flex flex-col gap-3" onSubmit={submit}>
             <PasswordInput value={pw} onChange={setPw} placeholder={t("Parol")} autoFocus autoComplete={isSetup ? "new-password" : "current-password"} label={t("Parol")} />
             {isSetup && <PasswordInput value={pw2} onChange={setPw2} placeholder={t("Parolni takrorlang")} autoComplete="new-password" label={t("Parolni takrorlang")} />}
+            {isSetup && cloud && (
+              <>
+                <input
+                  className="field h-11 text-[15px]"
+                  value={setupCode}
+                  onChange={(e) => setSetupCode(e.target.value)}
+                  placeholder={t("Sozlash kodi")}
+                  aria-label={t("Sozlash kodi")}
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+                <p className="text-3 -mt-1 text-[12px]">{t("Faqat birinchi marta: sayt egasi ekanligingizni tasdiqlaydi")}</p>
+              </>
+            )}
             {error && (
               <p className="text-[13px]" role="alert" style={{ color: "var(--red)" }}>
                 {error}
@@ -149,6 +192,21 @@ function LockScreen() {
               <b>{t("O'CHIRISH")}</b>
             </p>
             <input className="field" value={wipeText} onChange={(e) => setWipeText(e.target.value)} placeholder={t("O'CHIRISH")} aria-label={t("Tasdiqlash")} />
+            {cloud && (
+              <input
+                className="field"
+                value={setupCode}
+                onChange={(e) => setSetupCode(e.target.value)}
+                placeholder={t("Sozlash kodi")}
+                aria-label={t("Sozlash kodi")}
+                autoComplete="off"
+              />
+            )}
+            {error && (
+              <p className="text-[13px]" role="alert" style={{ color: "var(--red)" }}>
+                {error}
+              </p>
+            )}
             <div className="flex gap-2">
               <button type="button" className="btn btn-glass flex-1" onClick={() => setForgot(false)}>
                 {t("Orqaga")}
@@ -157,12 +215,20 @@ function LockScreen() {
                 type="button"
                 className="btn flex-1 text-white"
                 style={{ background: "var(--red)" }}
-                disabled={wipeText.trim().localeCompare(t("O'CHIRISH"), undefined, { sensitivity: "base" }) !== 0}
-                onClick={() => {
-                  wipe();
-                  useDashboard.getState().resetSample();
-                  setForgot(false);
-                  setWipeText("");
+                disabled={busy || wipeText.trim().localeCompare(t("O'CHIRISH"), undefined, { sensitivity: "base" }) !== 0 || (cloud && !setupCode.trim())}
+                onClick={async () => {
+                  setError("");
+                  setBusy(true);
+                  try {
+                    await wipe(setupCode.trim());
+                    useDashboard.getState().resetSample();
+                    setForgot(false);
+                    setWipeText("");
+                    setSetupCode("");
+                  } catch (err) {
+                    setError(vaultError(err));
+                  }
+                  setBusy(false);
                 }}
               >
                 {t("Hammasini o'chirish")}
@@ -220,7 +286,9 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const init = useAuth((s) => s.init);
   const [ready, setReady] = useState(false);
 
-  useEffect(() => init(), [init]);
+  useEffect(() => {
+    void init();
+  }, [init]);
   useAutoLock();
 
   // Decrypt and load the data once the key exists.
@@ -233,10 +301,19 @@ export function AuthGate({ children }: { children: ReactNode }) {
     void Promise.resolve(useDashboard.persist.rehydrate()).then(() => {
       if (!alive) return;
       useDashboard.getState().ensureRoutineDay();
+      // Fresh cloud vault: persist triggers on setState, so this uploads the starting data.
+      if (vault.needsInitialSave()) useDashboard.setState({});
       setReady(true);
+      vault.startSync();
+    });
+    // Newer data saved on another device → reload it here.
+    const off = vault.onRemoteChange(() => {
+      void Promise.resolve(useDashboard.persist.rehydrate()).then(() => toast(getT()("Boshqa qurilmadagi o'zgarishlar yuklandi")));
     });
     return () => {
       alive = false;
+      off();
+      vault.stopSync();
     };
   }, [status]);
 

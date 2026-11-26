@@ -6,6 +6,7 @@ import { PASSWORD_MIN, changePassword } from "@/lib/vault";
 import { useAuth } from "@/store/useAuth";
 import { type ClearOptions, useDashboard } from "@/store/useDashboard";
 import { PasswordInput } from "./AuthGate";
+import { BackupSection } from "./BackupSection";
 import { LANGS, LANG_NAMES, type TKey, useLang, useT } from "@/locales";
 import { CheckButton, toast } from "./ui";
 
@@ -57,7 +58,13 @@ function ChangePassword() {
         if (next !== next2) return setError(t("Yangi parollar bir xil emas"));
         if (next === current) return setError(t("Yangi parol eskisidan farq qilsin"));
         setBusy(true);
-        const ok = await changePassword(current, next);
+        let ok = false;
+        try {
+          ok = await changePassword(current, next);
+        } catch {
+          setBusy(false);
+          return setError(t("Serverda xatolik. Birozdan keyin qayta urining."));
+        }
         setBusy(false);
         if (!ok) return setError(t("Joriy parol noto'g'ri"));
         setCurrent("");
@@ -142,6 +149,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const t = useT();
   const lang = useLang((s) => s.lang);
   const setLang = useLang((s) => s.setLang);
+  const cloud = useAuth((s) => s.mode) === "cloud";
 
   return (
     <Modal open={open} onClose={onClose} title={t("Sozlamalar")} icon={Settings}>
@@ -196,6 +204,11 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
       </section>
 
       <section className="hairline mt-5 border-t pt-5">
+        <h3 className="label mb-2.5">{t("Zaxira nusxa")}</h3>
+        <BackupSection />
+      </section>
+
+      <section className="hairline mt-5 border-t pt-5">
         <h3 className="label mb-1">{t("Nolga tushirish")}</h3>
         <p className="text-2 mb-2.5 text-[13px]">{t("Namuna ma'lumotlarni o'chirib, o'z ishingizni 0 dan boshlash uchun. Nimani tozalashni tanlang:")}</p>
         <ResetToZero />
@@ -230,7 +243,9 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
       </section>
 
       <p className="text-3 mt-5 text-[12px] leading-relaxed">
-        {t("Ma'lumotlar faqat shu brauzerda, parolingizdan olingan kalit bilan shifrlangan holda (AES-256) saqlanadi. Boshqa qurilmada ular ko'rinmaydi.")}
+        {cloud
+          ? t("Ma'lumotlar bulutda shifrlangan holda saqlanadi va barcha qurilmalaringizda bir xil. Server ularni o'qiy olmaydi.")
+          : t("Ma'lumotlar faqat shu brauzerda, parolingizdan olingan kalit bilan shifrlangan holda (AES-256) saqlanadi. Boshqa qurilmada ular ko'rinmaydi.")}
       </p>
     </Modal>
   );

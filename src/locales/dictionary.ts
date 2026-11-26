@@ -438,6 +438,33 @@ export const DICT = {
   "Kim qancha qarz, qancha to'ladi — bir joyda": ["Кто сколько должен и сколько заплатил — в одном месте", "Кӣ чӣ қадар қарз дорад ва чӣ қадар пардохт кард — дар як ҷо", "Who owes what and what's been paid — in one place", "Kim ne kadar borçlu, ne kadar ödedi — tek yerde"],
   "Sotildi, lekin to'liq to'lanmagan": ["Продано, но оплачено не полностью", "Фурӯхта шуд, вале пурра пардохт нашудааст", "Sold but not fully paid", "Satıldı ama tamamı ödenmedi"],
   "Jarayonda|stat": ["В процессе", "Дар ҷараён", "In progress", "Süreçte"],
+
+  // ─── Cloud sync / backup ──────────────────────────────────────────────────
+  "Juda ko'p urinish. {s} soniyadan keyin qayta urining.": ["Слишком много попыток. Повторите через {s} сек.", "Кӯшиш хеле зиёд. Баъд аз {s} сония дубора кӯшиш кунед.", "Too many attempts. Try again in {s} s.", "Çok fazla deneme. {s} sn sonra tekrar deneyin."],
+  "Internetga ulanib bo'lmadi. Aloqani tekshiring.": ["Нет подключения к интернету. Проверьте связь.", "Ба интернет пайваст нашуд. Алоқаро санҷед.", "Can't connect to the internet. Check your connection.", "İnternete bağlanılamadı. Bağlantınızı kontrol edin."],
+  "Sozlash kodi noto'g'ri": ["Неверный код настройки", "Рамзи танзим нодуруст", "Wrong setup code", "Kurulum kodu yanlış"],
+  "Bu sayt uchun parol allaqachon o'rnatilgan. Sahifani yangilang.": ["Пароль для этого сайта уже установлен. Обновите страницу.", "Барои ин сайт парол аллакай гузошта шудааст. Саҳифаро нав кунед.", "A password is already set for this site. Refresh the page.", "Bu site için şifre zaten belirlendi. Sayfayı yenileyin."],
+  "Serverda xatolik. Birozdan keyin qayta urining.": ["Ошибка сервера. Попробуйте чуть позже.", "Хатои сервер. Каме баъдтар кӯшиш кунед.", "Server error. Please try again shortly.", "Sunucu hatası. Biraz sonra tekrar deneyin."],
+  "Sozlash kodini kiriting": ["Введите код настройки", "Рамзи танзимро ворид кунед", "Enter the setup code", "Kurulum kodunu girin"],
+  "Sozlash kodi": ["Код настройки", "Рамзи танзим", "Setup code", "Kurulum kodu"],
+  "Faqat birinchi marta: sayt egasi ekanligingizni tasdiqlaydi": ["Только в первый раз: подтверждает, что вы владелец сайта", "Танҳо бори аввал: тасдиқ мекунад, ки шумо соҳиби сайт ҳастед", "First time only: proves you own this site", "Yalnızca ilk sefer: site sahibi olduğunuzu doğrular"],
+  "Boshqa qurilmadagi o'zgarishlar yuklandi": ["Загружены изменения с другого устройства", "Тағйирот аз дастгоҳи дигар бор шуд", "Changes from another device loaded", "Diğer cihazdaki değişiklikler yüklendi"],
+  "Zaxira nusxa": ["Резервная копия", "Нусхаи эҳтиётӣ", "Backup", "Yedek"],
+  "Ma'lumotlarni shifrlangan fayl qilib saqlab oling yoki boshqa qurilmadan yuklang. Faylni ochish uchun o'sha paroli kerak.": ["Сохраните данные в зашифрованный файл или загрузите их с другого устройства. Для открытия нужен пароль, с которым файл создан.", "Маълумотро ҳамчун файли рамзгузоришуда нигоҳ доред ё аз дастгоҳи дигар бор кунед. Барои кушодан пароли ҳамон файл лозим аст.", "Save your data as an encrypted file or load it from another device. Opening it needs the password it was made with.", "Verilerinizi şifreli dosya olarak kaydedin veya başka cihazdan yükleyin. Açmak için dosyanın şifresi gerekir."],
+  "Yuklab olish": ["Скачать", "Боргирӣ", "Download", "İndir"],
+  "Fayldan tiklash": ["Восстановить из файла", "Барқарор аз файл", "Restore from file", "Dosyadan geri yükle"],
+  "Zaxira fayl saqlandi": ["Резервный файл сохранён", "Файли эҳтиётӣ нигоҳ дошта шуд", "Backup file saved", "Yedek dosya kaydedildi"],
+  "Fayl paroli": ["Пароль файла", "Пароли файл", "File password", "Dosya şifresi"],
+  "Fayl tanlangan: {name}": ["Выбран файл: {name}", "Файл интихоб шуд: {name}", "File selected: {name}", "Seçilen dosya: {name}"],
+  "Tiklash": ["Восстановить", "Барқарор кардан", "Restore", "Geri yükle"],
+  "Hozirgi ma'lumotlar fayldagilar bilan almashtiriladi. Davom etasizmi?": ["Текущие данные будут заменены данными из файла. Продолжить?", "Маълумоти ҳозира бо маълумоти файл иваз мешавад. Идома медиҳед?", "Current data will be replaced with the file's data. Continue?", "Mevcut veriler dosyadakilerle değiştirilecek. Devam edilsin mi?"],
+  "Ma'lumotlar fayldan tiklandi": ["Данные восстановлены из файла", "Маълумот аз файл барқарор шуд", "Data restored from file", "Veriler dosyadan geri yüklendi"],
+  "Fayl noto'g'ri yoki buzilgan": ["Файл неверный или повреждён", "Файл нодуруст ё вайрон аст", "The file is invalid or damaged", "Dosya geçersiz veya bozuk"],
+  "Fayl paroli noto'g'ri": ["Неверный пароль файла", "Пароли файл нодуруст", "Wrong file password", "Dosya şifresi yanlış"],
+  "Bulutda saqlandi": ["Сохранено в облаке", "Дар абр нигоҳ дошта шуд", "Saved to cloud", "Buluta kaydedildi"],
+  "Internet yo'q — keyin saqlanadi": ["Нет интернета — сохранится позже", "Интернет нест — баъдтар нигоҳ дошта мешавад", "Offline — will save later", "Çevrimdışı — sonra kaydedilecek"],
+  "Saqlashda xatolik": ["Ошибка сохранения", "Хатогӣ ҳангоми нигоҳдорӣ", "Save error", "Kaydetme hatası"],
+  "Ma'lumotlar bulutda shifrlangan holda saqlanadi va barcha qurilmalaringizda bir xil. Server ularni o'qiy olmaydi.": ["Данные хранятся в облаке в зашифрованном виде и одинаковы на всех ваших устройствах. Сервер не может их прочитать.", "Маълумот дар абр рамзгузоришуда нигоҳ дошта мешавад ва дар ҳамаи дастгоҳҳо якхела аст. Сервер онро хонда наметавонад.", "Data is stored encrypted in the cloud and is the same on all your devices. The server can't read it.", "Veriler bulutta şifreli saklanır ve tüm cihazlarınızda aynıdır. Sunucu onları okuyamaz."],
 } as const satisfies Record<string, Row>;
 
 export type TKey = keyof typeof DICT;

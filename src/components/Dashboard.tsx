@@ -42,6 +42,7 @@ import { SalesView } from "./SalesView";
 import { Avatar, ProfileSheet } from "./ProfileSheet";
 import { ContactLinks } from "./ContactLinks";
 import { DebtsView } from "./DebtsView";
+import { SyncBadge } from "./SyncBadge";
 import { ContactDialog } from "./StageActions";
 import { stageOf } from "@/lib/pipeline";
 import type { Prospect } from "@/lib/types";
@@ -350,6 +351,7 @@ function TopBar({
           </div>
         </div>
         <div className="flex items-center gap-1.5">
+          <SyncBadge />
           <GlassAdjust />
           <ThemeToggle />
           <button type="button" onClick={onSettings} className="glass-chip grid size-9 place-items-center" aria-label={t("Sozlamalar (parol, avto-qulflash)")} title={t("Sozlamalar")}>

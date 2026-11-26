@@ -7,24 +7,28 @@ export type AuthStatus = "loading" | "setup" | "locked" | "unlocked";
 
 interface AuthState {
   status: AuthStatus;
+  mode: vault.Mode;
   autoLockMin: number;
-  init: () => void;
-  setup: (password: string) => Promise<void>;
+  init: () => Promise<void>;
+  setup: (password: string, setupCode?: string) => Promise<void>;
+  /** true = correct; false = wrong password. Throws VaultError on rate limit / network. */
   unlock: (password: string) => Promise<boolean>;
   lock: () => void;
   setAutoLockMin: (min: number) => void;
-  wipe: () => void;
+  wipe: (setupCode?: string) => Promise<void>;
 }
 
 export const useAuth = create<AuthState>((set) => ({
   status: "loading",
+  mode: "local",
   autoLockMin: 15,
-  init: () => {
-    if (vault.isUnlocked()) return set({ status: "unlocked", autoLockMin: vault.getAutoLockMin() });
-    set({ status: vault.hasPassword() ? "locked" : "setup", autoLockMin: vault.getAutoLockMin() });
+  init: async () => {
+    if (vault.isUnlocked()) return set({ status: "unlocked", mode: vault.getMode(), autoLockMin: vault.getAutoLockMin() });
+    const r = await vault.initVault();
+    set({ status: r.hasPassword ? "locked" : "setup", mode: r.mode, autoLockMin: vault.getAutoLockMin() });
   },
-  setup: async (password) => {
-    await vault.setupPassword(password);
+  setup: async (password, setupCode) => {
+    await vault.setupPassword(password, setupCode);
     set({ status: "unlocked", autoLockMin: vault.getAutoLockMin() });
   },
   unlock: async (password) => {
@@ -40,8 +44,8 @@ export const useAuth = create<AuthState>((set) => ({
     vault.setAutoLockMin(min);
     set({ autoLockMin: min });
   },
-  wipe: () => {
-    vault.wipeEverything();
+  wipe: async (setupCode) => {
+    await vault.wipeEverything(setupCode);
     set({ status: "setup" });
   },
 }));
